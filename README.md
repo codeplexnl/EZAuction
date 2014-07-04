@@ -22,7 +22,7 @@
 <p>None</p>
 <h2><strong>Change log:</strong></h2>
 <p>Addon no longer replaces MarketplaceAuction and MarketplaceListings.<br />
-Addon no addes features to existing carbine addons<br />
+Addon now addes features to existing carbine addons<br />
 Added: Undercut lowest bid or buyout<br />Fixed: ...r\Addons\EZAuctionListingFix\EZAuctionListingFix.lua:274: attempt to call method 'IsPosted' (Thanks <a href="http://www.curse.com/users/Aisenfaire">Aisenfaire</a> and <a href="http://www.curse.com/users/csslider">csslider</a>}</p>
 <p><span>if you have a request/issue post a comment and ill see what i can do.</span></p>
 <p>Like the addon? Want to support?<br />Buy me a coffee :D</p>
