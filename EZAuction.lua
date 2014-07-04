@@ -150,6 +150,12 @@ function EZAuction:InitializeHooks()
 		end
 		
 		self:UpdatePrice(AuctionWindow, nLowestBidPrice, nLowestBuyoutPrice)
+		
+		local itemSelling = AuctionWindow:FindChild("SellContainer"):FindChild("CreateSellOrderBtn"):GetData()
+		
+		if itemSelling ~= nil and itemSelling:IsAuctionable() then
+			MarketplaceAuction.ValidateSellOrder(tMarketplaceAuction)
+		end
 	end
 	
 	-- Override OnSellListItemCheck
@@ -206,9 +212,7 @@ function EZAuction:UpdatePrice(tAuctionWindow, nBidPrice, nBuyoutPrice)
 		if nBidPrice ~= nil then
 			tBidInput:SetAmount(self:CalculatePrice(nBidPrice, false, self.SaveData.config.BuyoutUndercutByPercent))
 		end
-	end
-
-	
+	end	
 end
 
 -- Calculate the price according to the settings
@@ -228,7 +232,8 @@ function EZAuction:CalculatePrice(Amount, isBuyout, isPercent)
 			return Amount * ( 1 - (self.SaveData.config.BidUndercutPercentage / 100))
 		else
 			return Amount - self.SaveData.config.BidUndercutAmount
-		end	end
+		end	
+	end
 end
 
 -- Save settings
