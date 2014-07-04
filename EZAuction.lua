@@ -151,10 +151,12 @@ function EZAuction:InitializeHooks()
 		
 		self:UpdatePrice(AuctionWindow, nLowestBidPrice, nLowestBuyoutPrice)
 		
-		local itemSelling = AuctionWindow:FindChild("SellContainer"):FindChild("CreateSellOrderBtn"):GetData()
-		
-		if itemSelling ~= nil and itemSelling:IsAuctionable() then
-			MarketplaceAuction.ValidateSellOrder(tMarketplaceAuction)
+		if AuctionWindow ~= nil then
+			local itemSelling = AuctionWindow:FindChild("SellContainer"):FindChild("CreateSellOrderBtn"):GetData()
+			
+			if itemSelling ~= nil and itemSelling:IsAuctionable() then
+				MarketplaceAuction.ValidateSellOrder(tMarketplaceAuction)
+			end
 		end
 	end
 	
