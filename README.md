@@ -9,21 +9,21 @@
 <li>Sell conformation popup option</li>
 <li>Remove Cancel conformation</li>
 <li>Bidprice Undercut Lowest bidprice</li>
+<li><span>BetterMoneyInput Compatible</span></li>
 </ul>
 <h2><strong>Requested features:</strong></h2>
 <ul>
 <li>Watch list</li>
 <li>Subcategories for architect</li>
-<li>BetterMoneyInput like control</li>
 <li>Account wide item selling. (Do not undercut your self)</li>
 <li>Hotkey to auto sell item in item list.</li>
+<li>New item price (vendor price + amount/percent)</li>
 </ul>
 <h2><strong>Known issues:</strong></h2>
-<p>None</p>
+<p>When canceling C.R.E.D.D sell order the auction is not canceled (Disable EZAuction to cancel Auction)</p>
 <h2><strong>Change log:</strong></h2>
-<p>Addon no longer replaces MarketplaceAuction and MarketplaceListings.<br />
-Addon now addes features to existing carbine addons<br />
-Added: Undercut lowest bid or buyout<br />Fixed: ...r\Addons\EZAuctionListingFix\EZAuctionListingFix.lua:274: attempt to call method 'IsPosted' (Thanks <a href="http://www.curse.com/users/Aisenfaire">Aisenfaire</a> and <a href="http://www.curse.com/users/csslider">csslider</a>}</p>
+<p><span>Updated to API 9</span><br /><span>Added: If the item has no auctions grab vendor price</span></p>
 <p>The code has been posted to github. If you have an issue you can also add it there.</p>
 <p><span>if you have a request/issue post a comment and ill see what i can do.</span></p>
+<p><span>Thanks <a href="http://www.curse.com/users/Korgall">Korgall</a> for the review.<br />https://www.youtube.com/watch?v=9dNd2WTaxO0<br /></span></p>
 <p>Like the addon? Want to support?<br />Buy me a coffee :D</p>
