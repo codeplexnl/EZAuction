@@ -149,7 +149,10 @@ function EZAuction:InitializeHooks()
 		if itemselling ~= nil then
 			vendorPrice  = itemselling:GetSellPrice():GetAmount()
 		end
-
+		
+		if vendorPrice == 0 then
+			vendorPrice = 100
+		end
 		
 		for idx, aucCurr in ipairs(tAuctions) do
 			local nBuyoutPrice = aucCurr:GetBuyoutPrice():GetAmount()
