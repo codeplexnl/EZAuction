@@ -104,8 +104,7 @@ end
 function EZAuction:InitializeHooks()
 	local MarketplaceAuction = Apollo.GetAddon("MarketplaceAuction")
 	local MarketplaceListings = Apollo.GetAddon("MarketplaceListings")
-	
-	
+		
 	-- Override OnToggleAuctionWindow
 	local fnOnToggleAuctionWindow = MarketplaceAuction.OnToggleAuctionWindow
 	MarketplaceAuction.OnToggleAuctionWindow = function(tMarketplaceAuction)
@@ -118,7 +117,6 @@ function EZAuction:InitializeHooks()
 		self:InitializeOptions()
 	end
 	
-	-- Override OnCreateBuyoutInputBoxChanged
 	local fnOldOnCreateBuyoutInputBoxChanged = MarketplaceAuction.OnCreateBuyoutInputBoxChanged
 	MarketplaceAuction.OnCreateBuyoutInputBoxChanged = function(tMarketplaceAuction, wndHandler, wndControl)
 		local AuctionWindow = tMarketplaceAuction.wndMain
@@ -239,15 +237,24 @@ function EZAuction:UpdatePrice(tAuctionWindow, nBidPrice, nBuyoutPrice, isOwnBid
 	local tBuyoutInput = tAuctionWindow:FindChild("SellContainer:SellRightSide:CreateOrderContainer:CreateBuyoutInputBG:CreateBuyoutInputBox")
 	local nNewBuyoutPrice = self:CalculatePrice(nBuyoutPrice, true, self.SaveData.config.BuyoutUndercutByPercent, isOwnBuyout)
 	
+	local wndSellOrderBtn = tAuctionWindow:FindChild("SellContainer"):FindChild("CreateSellOrderBtn")
+	local itemMerchendice = wndSellOrderBtn:GetData()
+	
+	local nStack = 1
+	if itemMerchendice ~= nil then
+		nStack = itemMerchendice:GetStackCount()
+	end
+
+
 	if nNewBuyoutPrice ~= nil then
-		tBuyoutInput:SetAmount(nNewBuyoutPrice)
+		tBuyoutInput:SetAmount(nNewBuyoutPrice * nStack )
 	end
 		
 	if self.SaveData.config.BidUndercutBuyout then
-		tBidInput:SetAmount(self:CalculatePrice(tBuyoutInput:GetAmount(), false, self.SaveData.config.BidUndercutByPercent, isOwnBid))
+		tBidInput:SetAmount(self:CalculatePrice(tBuyoutInput:GetAmount(), false, self.SaveData.config.BidUndercutByPercent, isOwnBid) * nStack )
 	else
 		if nBidPrice ~= nil then
-			tBidInput:SetAmount(self:CalculatePrice(nBidPrice, false, self.SaveData.config.BidUndercutByPercent, isOwnBid))
+			tBidInput:SetAmount(self:CalculatePrice(nBidPrice, false, self.SaveData.config.BidUndercutByPercent, isOwnBid) * nStack )
 		end
 	end	
 end
