@@ -247,7 +247,7 @@ end
 
 -- Calculate the price according to the settings
 function EZAuction:CalculatePrice(Amount, isBuyout, isPercent, isOwn)
-	if Amount == nil or isOwn then
+	if Amount == nil or isOwn or amount == 0 then
 		return Amount
 	end
 	
