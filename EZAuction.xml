@@ -72,4 +72,10 @@
             <Event Name="ButtonSignal" Function="YourFunctionName"/>
         </Control>
     </Form>
+    <Form Class="Window" LAnchorPoint="0" LAnchorOffset="10" TAnchorPoint="0" TAnchorOffset="10" RAnchorPoint="0" RAnchorOffset="43" BAnchorPoint="0" BAnchorOffset="40" RelativeToClient="1" Font="Default" Text="" BGColor="UI_WindowBGDefault" TextColor="UI_WindowTextDefault" Template="Default" TooltipType="OnCursor" Name="EZAuctionAddToWatchListButton" Border="0" Picture="1" SwallowMouseClicks="1" Moveable="0" Escapable="1" Overlapped="1" TooltipColor="" Tooltip="" Sprite="">
+        <Control Class="Button" Base="BK3:btnHolo_Blue_Small" Font="DefaultButton" ButtonType="Check" RadioGroup="" LAnchorPoint="0" LAnchorOffset="-11" TAnchorPoint="0" TAnchorOffset="-18" RAnchorPoint="0" RAnchorOffset="46" BAnchorPoint="0" BAnchorOffset="42" DT_VCENTER="1" DT_CENTER="1" BGColor="UI_BtnBGDefault" TextColor="UI_BtnTextDefault" NormalTextColor="UI_BtnTextDefault" PressedTextColor="UI_BtnTextDefault" FlybyTextColor="UI_BtnTextDefault" PressedFlybyTextColor="UI_BtnTextDefault" DisabledTextColor="UI_BtnTextDefault" TooltipType="OnCursor" Name="AddToWatchListButton" TooltipColor="" Sprite="" Picture="1" NoClip="1" Text="" TextId="" Tooltip="Add To Watch List" TooltipId="" WindowSoundTemplate="ActionBarButton">
+            <Event Name="ButtonSignal" Function="YourFunctionName"/>
+            <Control Class="Window" LAnchorPoint="0" LAnchorOffset="12" TAnchorPoint="0" TAnchorOffset="14" RAnchorPoint="0" RAnchorOffset="48" BAnchorPoint="0" BAnchorOffset="51" RelativeToClient="1" Font="Default" Text="" BGColor="UI_WindowBGDefault" TextColor="UI_WindowTextDefault" Template="Default" TooltipType="OnCursor" Name="icon" TooltipColor="" Sprite="CRB_Basekit:kitIcon_Holo_HazardObserver" Picture="1" IgnoreMouse="1"/>
+        </Control>
+    </Form>
 </Forms>
