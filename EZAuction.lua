@@ -215,7 +215,14 @@ function EZAuction:InitializeHooks()
 			if not aucCurrent then
 				return
 			end
-			aucCurrent:Cancel()
+			
+			--If it is a C.R.E.D.D sell order and we have to calel t differently.
+			if wndHandler:GetName() == "CommodityCancelBtn" or wndHandler:GetName() == "AuctionCancelBtn" then
+				aucCurrent:Cancel()
+			else
+				CREDDExchangeLib.CancelOrder(aucCurrent)
+				tMarkerplaceListings:RequestData()
+			end
 		else
 			fnOldOnCancelBtn(tMarkerplaceListings, wndHandler, wndControl)
 		end
