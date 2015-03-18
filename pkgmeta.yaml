@@ -1,0 +1,4 @@
+package-as: EZAuction 1.2.1
+ignore:
+	- README.md
+manual-changelog: CHANGELOG.txt
