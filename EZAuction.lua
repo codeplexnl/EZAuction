@@ -145,7 +145,12 @@ function EZAuction:InitializeHooks()
 		
 		local vendorPrice = 0
 		if itemselling ~= nil then
-			vendorPrice  = itemselling:GetSellPrice():GetAmount()
+			-- Fix for raidin items that have no vendor value
+			local isRaidin = string.sub(itemselling:GetName(),1,string.len("Raidin"))=="Raidin"
+			
+			if not isRaidin then
+				vendorPrice  = itemselling:GetSellPrice():GetAmount()
+			end
 		end
 		
 		if vendorPrice == 0 then
