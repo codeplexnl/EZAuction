@@ -1,0 +1,2 @@
+Added: Add amount/Percent to vendor price
+Cleaned up the comments and code

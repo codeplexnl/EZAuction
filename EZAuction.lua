@@ -29,10 +29,13 @@ defaults.config.DisableCancelConfirmation = false
 defaults.config.BuyoutUndercutByPercent = true
 defaults.config.BidUndercutByPercent = true
 defaults.config.CheckListingFee = false
+defaults.config.AddToVendorPercent = true
 defaults.config.BuyoutUndercutAmount = 100
 defaults.config.BuyoutUndercutPercentage = 5
 defaults.config.BidUndercutAmount = 100
 defaults.config.BidUndercutPercentage = 5
+defaults.config.AddToVendorPriceAmount = 0
+defaults.config.AddToVendorPricePercentage = 5
 
  
 -----------------------------------------------------------------------------------------------
@@ -74,6 +77,10 @@ function EZAuction:InitializeOptions()
 	
 	self.wndOptions:FindChild("EZAuctionOptions:OtherOptions:SellConfirmation:DisableSellConfirmationButton"):SetCheck(self.SaveData.config.DisableSellConfirmation)
 	self.wndOptions:FindChild("EZAuctionOptions:OtherOptions:CancelConfirmation:DisableCancelConfirmationButton"):SetCheck(self.SaveData.config.DisableCancelConfirmation)
+	
+	self.wndOptions:FindChild("EZAuctionOptions:OtherOptions:AddToVendor:Percent:Slider"):SetValue(self.SaveData.config.AddToVendorPricePercentage)
+	self.wndOptions:FindChild("EZAuctionOptions:OtherOptions:AddToVendor:Percent:Amount"):SetText(self.SaveData.config.AddToVendorPricePercentage)
+	self.wndOptions:FindChild("EZAuctionOptions:OtherOptions:AddToVendor:Amount:Amount"):SetAmount(self.SaveData.config.AddToVendorPriceAmount)
 		
 	self:ToggleBuyoutPercentAmount()
 	self:ToggleBidPercentAmount()
@@ -102,6 +109,8 @@ end
 -- EZAuction Functions
 -----------------------------------------------------------------------------------------------
 function EZAuction:InitializeHooks()
+	Apollo.RegisterEventHandler("SystemKeyDown", 			"OnSystemKeyDown", self)
+
 	local MarketplaceAuction = Apollo.GetAddon("MarketplaceAuction")
 	local MarketplaceListings = Apollo.GetAddon("MarketplaceListings")
 		
@@ -156,6 +165,12 @@ function EZAuction:InitializeHooks()
 		if vendorPrice == 0 then
 			vendorPrice = 100
 		end
+		
+		if self.SaveData.config.AddToVendorPercent then
+			vendorPrice = vendorPrice + (vendorPrice * (self.SaveData.config.AddToVendorPricePercentage/ 100))
+		else
+			vendorPrice = vendorPrice + self.SaveData.config.AddToVendorPriceAmount
+		end	
 		
 		for idx, aucCurr in ipairs(tAuctions) do
 			local nBuyoutPrice = aucCurr:GetBuyoutPrice():GetAmount()
@@ -219,7 +234,7 @@ function EZAuction:InitializeHooks()
 				return
 			end
 			
-			--If it is a C.R.E.D.D sell order and we have to calel t differently.
+			--If it is a C.R.E.D.D sell order and we have to cancel it differently.
 			if wndHandler:GetName() == "CommodityCancelBtn" or wndHandler:GetName() == "AuctionCancelBtn" then
 				aucCurrent:Cancel()
 			else
@@ -322,6 +337,11 @@ function EZAuction:ToggleBuyoutPercentAmount()
 	self.wndOptions:FindChild("EZAuctionOptions:UndercutBuyout:UndercutBuyoutAmount"):Show(not self.SaveData.config.BuyoutUndercutByPercent)
 end
 
+function EZAuction:ToggleAddToVendorPercentAmount()
+	self.wndOptions:FindChild("EZAuctionOptions:OtherOptions:AddToVendor:Percent"):Show(self.SaveData.config.AddToVendorPercent)
+	self.wndOptions:FindChild("EZAuctionOptions:OtherOptions:AddToVendor:Amount"):Show(not self.SaveData.config.AddToVendorPercent)
+end
+
 function EZAuction:UndercutBidSliderChanged( wndHandler, wndControl, fNewValue, fOldValue )
 	self.SaveData.config.BidUndercutPercentage= fNewValue
 	self.wndOptions:FindChild("EZAuctionOptions:UndercutBid:UndercutBidPercent:Amount"):SetText(fNewValue)
@@ -352,6 +372,21 @@ end
 
 function EZAuction:btnDisableCancelConfirmation( wndHandler, wndControl, eMouseButton )
 	self.SaveData.config.DisableCancelConfirmation = not self.SaveData.config.DisableCancelConfirmation
+end
+
+function EZAuction:AddToVendorSliderChanged( wndHandler, wndControl, fNewValue, fOldValue )
+	self.SaveData.config.AddToVendorPricePercentage = fNewValue
+	self.wndOptions:FindChild("EZAuctionOptions:OtherOptions:AddToVendor:Percent:Amount"):SetText(fNewValue)
+
+end
+
+function EZAuction:OnAddToVendorAmountChanged( wndHandler, wndControl )
+	self.SaveData.config.AddToVendorPriceAmount = self.wndOptions:FindChild("EZAuctionOptions:OtherOptions:AddToVendor:Amount:Amount"):GetAmount()
+end
+
+function EZAuction:btnAddToVendor( wndHandler, wndControl, eMouseButton )
+	self.SaveData.config.AddToVendorPercent = not self.SaveData.config.AddToVendorPercent
+	self:ToggleAddToVendorPercentAmount()
 end
 
 -----------------------------------------------------------------------------------------------
