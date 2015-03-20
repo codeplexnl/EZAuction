@@ -3,4 +3,7 @@ ignore:
 	- README.md
 	- CHANGELOG.txt
 	- LICENSE
+
+license-output: LICENSE
+
 manual-changelog: CHANGELOG.txt
