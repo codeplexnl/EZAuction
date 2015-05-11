@@ -23,8 +23,9 @@
 <h2><strong>Known issues:</strong></h2>
 <p><strong>none&nbsp;</strong></p>
 <h2><strong>Change log:</strong></h2>
-<p><span data-mce-mark="1">Fixed: Error caused by Radin' items </span></p>
-<p>The code has been posted to github. If you have an issue you can also add it there.</p>
-<p><span data-mce-mark="1">if you have a request/issue post a comment and ill see what i can do.</span></p>
-<p><span data-mce-mark="1">Thanks <a href="http://www.curse.com/users/Korgall">Korgall</a> for the review.<br />https://www.youtube.com/watch?v=9dNd2WTaxO0<br /></span></p>
+<p><span data-mce-mark="1">Updated: Updated to API 10</p>
+<p>Fixed: Error caused by Crimson Marauder items</p>
+<p>Fixed: Placement of options button shifted to align with new Auction House window width</p>
+<p>Fixed: Bid price exceeding buyout price when buyout undercut uses percentage and bid undercut uses fixed amount</p>
+<p>Added: Added warning on bid and buyout prices when using Vendor Sell Price as base for listing price and undercut calculations.</span></p>
 <p>Like the addon? Want to support?<br />Buy me a coffee :D</p>
