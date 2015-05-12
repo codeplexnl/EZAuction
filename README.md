@@ -23,9 +23,11 @@
 <h2><strong>Known issues:</strong></h2>
 <p><strong>none&nbsp;</strong></p>
 <h2><strong>Change log:</strong></h2>
-<p><span data-mce-mark="1">Updated: Updated to API 10</p>
-<p>Fixed: Error caused by Crimson Marauder items</p>
-<p>Fixed: Placement of options button shifted to align with new Auction House window width</p>
-<p>Fixed: Bid price exceeding buyout price when buyout undercut uses percentage and bid undercut uses fixed amount</p>
-<p>Added: Added warning on bid and buyout prices when using Vendor Sell Price as base for listing price and undercut calculations.</span></p>
+<ul>
+<li>Updated: Updated to API 10</li>
+<li>Fixed: Error caused by Crimson Marauder items</li>
+<li>Fixed: Placement of options button shifted to align with new Auction House window width</li>
+<li>Fixed: Bid price exceeding buyout price when buyout undercut uses percentage and bid undercut uses fixed amount</li>
+<li>Added: Added warning on bid and buyout prices when using Vendor Sell Price as base for listing price and undercut calculations.</li>
+</ul>
 <p>Like the addon? Want to support?<br />Buy me a coffee :D</p>
