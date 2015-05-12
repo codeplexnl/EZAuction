@@ -1,5 +1,2 @@
-Updated: Updated to API 10
-Fixed: Error caused by Crimson Marauder items
-Fixed: Placement of options button shifted to align with new Auction House window width
-Fixed: Bid price exceeding buyout price when buyout undercut uses percentage and bid undercut uses fixed amount
-Added: Added warning on bid and buyout prices when using Vendor Sell Price as base for listing price and undercut calculations.
+Added: Add amount/Percent to vendor price
+Cleaned up the comments and code
