@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Addon Author="Codeplex" APIVersion="9" Name="EZAuction" Description="Adds Features to the existing Auction House" Version="1.1.1">
+<Addon Author="Codeplex, Zaresir" APIVersion="10" Name="EZAuction" Description="Adds Features to the existing Auction House" Version="1.3.0">
     <Script Name="EZAuction.lua"/>
     <Form Name="EZAuction.xml"/>
 </Addon>
