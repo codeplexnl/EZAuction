@@ -123,7 +123,7 @@ function EZAuction:InitializeHooks()
 		
 		self.wndOptionsButton = Apollo.LoadForm(self.xmlDoc, "EZAuctionOptionsButtonContainer", tMarketplaceAuction.wndMain, self)
 		self.wndOptions = Apollo.LoadForm(self.xmlDoc, "EZAuctionOptions", tMarketplaceAuction.wndMain, self)
-		self.wndWarnings = Apollo.LoadForm(self.xmlDoc, "EZAuctionVendorPriceWarnings", tMarketplaceAuction.wndMain, self)
+		self.wndWarnings = Apollo.LoadForm(self.xmlDoc, "EZAuctionVendorPriceWarnings", tMarketplaceAuction.wndMain:FindChild("SellContainer"), self)
 
 		self.wndOptionsButton:FindChild("EZAuctionOptionsButton"):AttachWindow(self.wndOptions)
 		self:InitializeOptions()
@@ -152,9 +152,13 @@ function EZAuction:InitializeHooks()
 		local nLowestBidPrice = 0
 		local nIsOwnBuyout = false
 		local nIsOwnBid = false
+		local bidVendor = false
+		local buyoutVendor = false
 		
 		local wndSellOrderBtn = MarketplaceAuction.wndMain:FindChild("SellContainer"):FindChild("CreateSellOrderBtn")
 		local itemselling = wndSellOrderBtn:GetData()
+		
+		self:ToggleVendorPriceWarnings(bidVendor, buyoutVendor)
 		
 		local vendorPrice = 0
 		if itemselling ~= nil then
@@ -196,19 +200,20 @@ function EZAuction:InitializeHooks()
 		
 		if nLowestBuyoutPrice < vendorPrice then
 			nLowestBuyoutPrice = vendorPrice
-			self.wndWarnings:FindChild("EZAuctionVendorPriceWarnings:buyoutVendorPrice"):Show(true)
+			buyoutVendor = true
 		else
-			self.wndWarnings:FindChild("EZAuctionVendorPriceWarnings:buyoutVendorPrice"):Show(false)
+			buyoutVendor = false
 		end
 		
 		if nLowestBidPrice < vendorPrice then
 			nLowestBidPrice = vendorPrice
-			self.wndWarnings:FindChild("EZAuctionVendorPriceWarnings:bidVendorPrice"):Show(true)
+			bidVendor = true
 		else
-			self.wndWarnings:FindChild("EZAuctionVendorPriceWarnings:bidVendorPrice"):Show(false)
+			bidVendor = false
 		end
 		
 		self:UpdatePrice(AuctionWindow, nLowestBidPrice, nLowestBuyoutPrice, nIsOwnBid, nIsOwnBuyout)
+		self:ToggleVendorPriceWarnings(bidVendor, buyoutVendor)
 		
 		if AuctionWindow ~= nil then
 			local itemSelling = AuctionWindow:FindChild("SellContainer"):FindChild("CreateSellOrderBtn"):GetData()
@@ -236,8 +241,10 @@ function EZAuction:InitializeHooks()
 	MarketplaceAuction.OnSellListItemUncheck = function(tMarketplaceAuction, wndHandler, wndControl)
 		fnOnSellListItemUncheck(tMarketplaceAuction, wndHandler, wndControl)
 		
-		self.wndWarnings:FindChild("EZAuctionVendorPriceWarnings:buyoutVendorPrice"):Show(false)
-		self.wndWarnings:FindChild("EZAuctionVendorPriceWarnings:bidVendorPrice"):Show(false)
+		local bidVendor = false
+		local buyoutVendor = false
+		
+		self:ToggleVendorPriceWarnings(bidVendor, buyoutVendor)
 	end
 	
 	-- Override OnPostItemAuctionResult
@@ -321,13 +328,21 @@ function EZAuction:CalculatePrice(Amount, isBuyout, isPercent, isOwn)
 		if isPercent then
 			return Amount * ( 1 - (self.SaveData.config.BuyoutUndercutPercentage / 100))
 		else
-			return Amount - self.SaveData.config.BuyoutUndercutAmount
+			if Amount < self.SaveData.config.BuyoutUndercutAmount then
+				return 1
+			else
+				return Amount - self.SaveData.config.BuyoutUndercutAmount
+			end
 		end
 	else
 		if isPercent then
 			return Amount * ( 1 - (self.SaveData.config.BidUndercutPercentage / 100))
 		else
-			return Amount - self.SaveData.config.BidUndercutAmount
+			if Amount < self.SaveData.config.BidUndercutAmount then
+				return 1
+			else
+				return Amount - self.SaveData.config.BidUndercutAmount
+			end
 		end	
 	end
 end
@@ -372,6 +387,11 @@ end
 function EZAuction:ToggleAddToVendorPercentAmount()
 	self.wndOptions:FindChild("EZAuctionOptions:OtherOptions:AddToVendor:AddToVendorPercent"):Show(self.SaveData.config.AddToVendorPercent)
 	self.wndOptions:FindChild("EZAuctionOptions:OtherOptions:AddToVendor:AddToVendorAmount"):Show(not self.SaveData.config.AddToVendorPercent)
+end
+
+function EZAuction:ToggleVendorPriceWarnings(bidVendor, buyoutVendor)
+	self.wndWarnings:FindChild("EZAuctionVendorPriceWarnings:bidVendorPrice"):Show(bidVendor)
+	self.wndWarnings:FindChild("EZAuctionVendorPriceWarnings:buyoutVendorPrice"):Show(buyoutVendor)
 end
 
 function EZAuction:UndercutBidSliderChanged( wndHandler, wndControl, fNewValue, fOldValue )
