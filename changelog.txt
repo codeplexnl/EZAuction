@@ -1,10 +1,6 @@
-1.3.0:
-Updated: Updated to API 10
-Fixed: Error caused by Crimson Marauder items
-Fixed: Placement of options button shifted to align with new Auction House window width
-Fixed: Bid price exceeding buyout price when buyout undercut uses percentage and bid undercut uses fixed amount
-Added: Added warning on bid and buyout prices when using Vendor Sell Price as base for listing price and undercut calculations.
+1.3.6:
+Fixed: Minimum bid no longer resets to 0 when buyout price is changed manually
+Fixed: Minimum bid correctly updates anytime the buyout price is changed
+Fixed: Addon will correctly handle ALL items that do not have vendor sell price
 
-1.3.5:
-Fixed: Fix overlay issue with the "Using Vendor Sell Price" warning.
-Fixed: Added consideration when calculating bid and buyout for prices lower than the fixed undercut amount. When this happens, it will default to 1 copper.
+Added: When undercuttng lowest auction bid, minimum bid will undercut buyout price if lowest bid is greater than buyout price.
