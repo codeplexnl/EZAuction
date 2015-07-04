@@ -49,6 +49,8 @@ function EZAuction:new(o)
     -- initialize variables here	
 	self.SaveData = {}
 	self.SaveData.config = setmetatable({}, {__index = defaults.config})
+	
+	local nLowestBidPrice = 0
 
     return o
 end
@@ -129,12 +131,18 @@ function EZAuction:InitializeHooks()
 		self:InitializeOptions()
 	end
 
-	--Override OnCreateBuyoutInputBoxChanged	
+	-- Override OnCreateBuyoutInputBoxChanged	
 	local fnOldOnCreateBuyoutInputBoxChanged = MarketplaceAuction.OnCreateBuyoutInputBoxChanged
 	MarketplaceAuction.OnCreateBuyoutInputBoxChanged = function(tMarketplaceAuction, wndHandler, wndControl)
 		local AuctionWindow = tMarketplaceAuction.wndMain
-				
-		self:UpdatePrice(AuctionWindow, nil, nil, nil ,nil)
+		
+		-- Resend include lowest bid if undercutting bids
+		if self.SaveData.config.BidUndercutBuyout then
+			self:UpdatePrice(AuctionWindow, nil, nil, nil ,nil)
+		else
+			self:UpdatePrice(AuctionWindow, nLowestBidPrice, nil, nil ,nil)
+		end
+			
 		fnOldOnCreateBuyoutInputBoxChanged(tMarketplaceAuction, wndHandler, wndControl)
 	end
 		
@@ -147,9 +155,10 @@ function EZAuction:InitializeHooks()
 			return
 		end
 
+		nLowestBidPrice = 0
+		
 		local AuctionWindow = tMarketplaceAuction.wndMain
 		local nLowestBuyoutPrice = 0
-		local nLowestBidPrice = 0
 		local nIsOwnBuyout = false
 		local nIsOwnBid = false
 		local bidVendor = false
@@ -161,15 +170,11 @@ function EZAuction:InitializeHooks()
 		self:ToggleVendorPriceWarnings(bidVendor, buyoutVendor)
 		
 		local vendorPrice = 0
+		
 		if itemselling ~= nil then
-			-- Fix for raidin items that have no vendor value
-			local isRaidin = string.sub(itemselling:GetName(),1,string.len("Raidin"))=="Raidin"
-			
-			-- Fix for Crimson Marauder items that have no vendor value
-			local isCrimson = string.sub(itemselling:GetName(),1,string.len("Crimson Marauder"))=="Crimson Marauder"
-			
-			if not isRaidin and not isCrimson then
-				vendorPrice  = itemselling:GetSellPrice():GetAmount()
+			-- Fix for items that have no vendor value
+			if itemselling:GetSellPrice() ~= nil then
+				vendorPrice = itemselling:GetSellPrice():GetAmount()
 			end
 		end
 		
@@ -236,17 +241,22 @@ function EZAuction:InitializeHooks()
 		MarketplaceLib.RequestItemAuctionsByItems({ itemSelling:GetItemId() }, 0, MarketplaceLib.AuctionSort.Buyout, false, arFilter  , nil, nil, nil)
 	end
 		
-	--Override OnSellListItemUncheck
+	-- Override OnSellListItemUncheck
 	local fnOnSellListItemUncheck = MarketplaceAuction.OnSellListItemUncheck
 	MarketplaceAuction.OnSellListItemUncheck = function(tMarketplaceAuction, wndHandler, wndControl)
 		fnOnSellListItemUncheck(tMarketplaceAuction, wndHandler, wndControl)
-		
-		local bidVendor = false
-		local buyoutVendor = false
-		
-		self:ToggleVendorPriceWarnings(bidVendor, buyoutVendor)
+
+		self:ToggleVendorPriceWarnings(false, false)
 	end
 	
+	-- Override OnItemAuctionSellOrderSubmitted
+	local fnOnItemAuctionSellOrderSubmitted = MarketplaceAuction.OnItemAuctionSellOrderSubmitted
+	MarketplaceAuction.OnItemAuctionSellOrderSubmitted = function(tMarketplaceAuction, wndHandler, wndControl)
+		fnOnItemAuctionSellOrderSubmitted(tMarketplaceAuction, wndHandler, wndControl)
+
+		self:ToggleVendorPriceWarnings(false, false)
+	end
+		
 	-- Override OnPostItemAuctionResult
 	local fnOldOnPostItemAuctionResult = MarketplaceAuction.OnPostItemAuctionResult
 	MarketplaceAuction.OnPostItemAuctionResult = function(tMarketplaceAuction, eAuctionPostResult, aucCurr)	
@@ -255,7 +265,7 @@ function EZAuction:InitializeHooks()
 		end
 	end
 	
-	--Override OnCancelButton
+	-- Override OnCancelButton
 	local fnOldOnCancelBtn = MarketplaceListings.OnCancelBtn
 	MarketplaceListings.OnCancelBtn = function(tMarkerplaceListings, wndHandler, wndControl)
 		if self.SaveData.config.DisableCancelConfirmation then
@@ -277,7 +287,7 @@ function EZAuction:InitializeHooks()
 	end
 end
 
--- Update the ui with new prices
+-- Update the UI with new prices
 function EZAuction:UpdatePrice(tAuctionWindow, nBidPrice, nBuyoutPrice, isOwnBid, isOwnBuyout)
 	if tAuctionWindow == nil then
 		return
@@ -285,9 +295,7 @@ function EZAuction:UpdatePrice(tAuctionWindow, nBidPrice, nBuyoutPrice, isOwnBid
 	
 	local tBidInput = tAuctionWindow:FindChild("SellContainer:SellRightSide:CreateOrderContainer:CreateBidInputBG:CreateBidInputBox")
 	local tBuyoutInput = tAuctionWindow:FindChild("SellContainer:SellRightSide:CreateOrderContainer:CreateBuyoutInputBG:CreateBuyoutInputBox")
-	--local nNewBuyoutPrice = self:CalculatePrice(nBuyoutPrice, true, self.SaveData.config.BuyoutUndercutByPercent, isOwnBuyout)
-	local nAdjustedBidPrice = 0
-	local nAdjustedBuyoutPrice = 0
+	local nNewBuyoutPrice = self:CalculatePrice(nBuyoutPrice, true, self.SaveData.config.BuyoutUndercutByPercent, isOwnBuyout)
 	
 	local wndSellOrderBtn = tAuctionWindow:FindChild("SellContainer"):FindChild("CreateSellOrderBtn")
 	local itemMerchendice = wndSellOrderBtn:GetData()
@@ -297,30 +305,27 @@ function EZAuction:UpdatePrice(tAuctionWindow, nBidPrice, nBuyoutPrice, isOwnBid
 		nStack = itemMerchendice:GetStackCount()
 	end
 
-	if nBuyoutPrice ~= nil then
-		nAdjustedBuyoutPrice = self:CalculatePrice(nBuyoutPrice, true, self.SaveData.config.BuyoutUndercutByPercent, isOwnBuyout) * nStack
-		tBuyoutInput:SetAmount(nAdjustedBuyoutPrice)
+	if nNewBuyoutPrice ~= nil then
+		tBuyoutInput:SetAmount(nNewBuyoutPrice * nStack )
 	end
 		
 	if self.SaveData.config.BidUndercutBuyout then
-		nAdjustedBidPrice = self:CalculatePrice(nAdjustedBuyoutPrice, false, self.SaveData.config.BidUndercutByPercent, isOwnBid)
+		tBidInput:SetAmount(self:CalculatePrice(tBuyoutInput:GetAmount(), false, self.SaveData.config.BidUndercutByPercent, isOwnBid))
 	else
 		if nBidPrice ~= nil then
-				if (nBidPrice * nStack) > nAdjustedBuyoutPrice then
-					nBidPrice = nAdjustedBuyoutPrice
-					nStack = 1
-				end
-				
-				nAdjustedBidPrice = self:CalculatePrice(nBidPrice, false, self.SaveData.config.BidUndercutByPercent, isOwnBid) * nStack
+			tBidInput:SetAmount(self:CalculatePrice(nBidPrice, false, self.SaveData.config.BidUndercutByPercent, isOwnBid) * nStack )
+		end
+		
+		if tBidInput:GetAmount() > tBuyoutInput:GetAmount() then
+			Print("EZAuction: Lowest bid greater than buyout price. Undercutting buyout price")
+			tBidInput:SetAmount(self:CalculatePrice(tBuyoutInput:GetAmount(), false, self.SaveData.config.BidUndercutByPercent, isOwnBid))
 		end
 	end	
-	
-	tBidInput:SetAmount(nAdjustedBidPrice)
 end
 
 -- Calculate the price according to the settings
 function EZAuction:CalculatePrice(Amount, isBuyout, isPercent, isOwn)
-	if Amount == nil or isOwn or amount == 0 then
+	if Amount == nil or isOwn or Amount == 0 then
 		return Amount
 	end
 	
@@ -355,7 +360,7 @@ function EZAuction:OnSave(eLevel)
 	return self.SaveData.config
 end
 
---Load Settings
+-- Load Settings
 function EZAuction:OnRestore(eLevel, tData)
 	self.SaveData.config = setmetatable(tData, {__index = defaults.config})
 end
