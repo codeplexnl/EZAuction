@@ -6,4 +6,4 @@ ignore:
 
 license-output: LICENSE
 
-manual-changelog: CHANGELOG.txt
+manual-changelog: changelog.txt

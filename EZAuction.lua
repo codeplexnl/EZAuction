@@ -183,7 +183,7 @@ function EZAuction:InitializeHooks()
 		end
 		
 		if self.SaveData.config.AddToVendorPercent then
-			vendorPrice = vendorPrice + (vendorPrice * (self.SaveData.config.AddToVendorPricePercentage / 100))
+			vendorPrice = vendorPrice + (vendorPrice * (self.SaveData.config.AddToVendorPricePercentage / 1000))
 		else
 			vendorPrice = vendorPrice + self.SaveData.config.AddToVendorPriceAmount
 		end	
