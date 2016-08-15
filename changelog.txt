@@ -1,8 +1,5 @@
-<b>1.3.8:</b>
+<b>1.3.10:</b>
 <p>
 <ul>
-<l>Fixed API Version (Ryad1)</li>
-<li>Raised Add to vendor price to 1000% (Leaky2)</li>
+<l>Fixed API Version</li>
 </ul>
-
-Looking into bid not under cutting foir similar items.
