@@ -293,8 +293,8 @@ function EZAuction:UpdatePrice(tAuctionWindow, nBidPrice, nBuyoutPrice, isOwnBid
 		return
 	end
 	
-	local tBidInput = tAuctionWindow:FindChild("SellContainer:SellRightSide:CreateOrderContainer:CreateBidInputBG:CreateBidInputBox")
-	local tBuyoutInput = tAuctionWindow:FindChild("SellContainer:SellRightSide:CreateOrderContainer:CreateBuyoutInputBG:CreateBuyoutInputBox")
+	local tBidInput = tAuctionWindow:FindChild("SellContainer:SellRightSide:ResultsContainer:HeaderFraming:CreateOrderContainer:CreateBidInputBG:CreateBidInputBox")
+	local tBuyoutInput = tAuctionWindow:FindChild("SellContainer:SellRightSide:ResultsContainer:HeaderFraming:CreateOrderContainer:CreateBuyoutInputBG:CreateBuyoutInputBox")
 	local nNewBuyoutPrice = self:CalculatePrice(nBuyoutPrice, true, self.SaveData.config.BuyoutUndercutByPercent, isOwnBuyout)
 	
 	local wndSellOrderBtn = tAuctionWindow:FindChild("SellContainer"):FindChild("CreateSellOrderBtn")
@@ -310,15 +310,15 @@ function EZAuction:UpdatePrice(tAuctionWindow, nBidPrice, nBuyoutPrice, isOwnBid
 	end
 		
 	if self.SaveData.config.BidUndercutBuyout then
-		tBidInput:SetAmount(self:CalculatePrice(tBuyoutInput:GetAmount(), false, self.SaveData.config.BidUndercutByPercent, isOwnBid))
+		tBidInput:SetAmount(self:CalculatePrice(tBuyoutInput:GetAmount():GetAmount(), false, self.SaveData.config.BidUndercutByPercent, isOwnBid))
 	else
 		if nBidPrice ~= nil then
 			tBidInput:SetAmount(self:CalculatePrice(nBidPrice, false, self.SaveData.config.BidUndercutByPercent, isOwnBid) * nStack )
 		end
 		
-		if tBidInput:GetAmount() > tBuyoutInput:GetAmount() then
+		if tBidInput:GetAmount():GetAmount() > tBuyoutInput:GetAmount():GetAmount() then
 			Print("EZAuction: Lowest bid greater than buyout price. Undercutting buyout price")
-			tBidInput:SetAmount(self:CalculatePrice(tBuyoutInput:GetAmount(), false, self.SaveData.config.BidUndercutByPercent, isOwnBid))
+			tBidInput:SetAmount(self:CalculatePrice(tBuyoutInput:GetAmount():GetAmount(), false, self.SaveData.config.BidUndercutByPercent, isOwnBid))
 		end
 	end	
 end
@@ -376,7 +376,7 @@ function EZAuction:UndercutBuyoutSliderChanged( wndHandler, wndControl, fNewValu
 end
 
 function EZAuction:OnUndercutBuyoutAmountChanged( wndHandler, wndControl )
-	self.SaveData.config.BuyoutUndercutAmount = self.wndOptions:FindChild("EZAuctionOptions:UndercutBuyout:UndercutBuyoutAmount:Amount"):GetAmount()
+	self.SaveData.config.BuyoutUndercutAmount = self.wndOptions:FindChild("EZAuctionOptions:UndercutBuyout:UndercutBuyoutAmount:Amount"):GetAmount():GetAmount()
 end
 
 function EZAuction:btnUndercutByPercentToggle( wndHandler, wndControl, eMouseButton )
@@ -405,7 +405,7 @@ function EZAuction:UndercutBidSliderChanged( wndHandler, wndControl, fNewValue, 
 end
 
 function EZAuction:OnUndercutBidAmountChanged( wndHandler, wndControl )
-	self.SaveData.config.BidUndercutAmount = self.wndOptions:FindChild("EZAuctionOptions:UndercutBid:UndercutBidAmount:Amount"):GetAmount()
+	self.SaveData.config.BidUndercutAmount = self.wndOptions:FindChild("EZAuctionOptions:UndercutBid:UndercutBidAmount:Amount"):GetAmount():GetAmount()
 
 end
 
@@ -437,7 +437,7 @@ function EZAuction:AddToVendorSliderChanged( wndHandler, wndControl, fNewValue, 
 end
 
 function EZAuction:OnAddToVendorAmountChanged( wndHandler, wndControl )
-	self.SaveData.config.AddToVendorPriceAmount = self.wndOptions:FindChild("EZAuctionOptions:OtherOptions:AddToVendor:AddToVendorAmount:Amount"):GetAmount()
+	self.SaveData.config.AddToVendorPriceAmount = self.wndOptions:FindChild("EZAuctionOptions:OtherOptions:AddToVendor:AddToVendorAmount:Amount"):GetAmount():GetAmount()
 end
 
 function EZAuction:btnAddToVendorPercent( wndHandler, wndControl, eMouseButton )
